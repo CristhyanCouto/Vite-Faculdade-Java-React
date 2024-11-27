@@ -1,37 +1,63 @@
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import DeleteButton from "./delete-button";
+import EditButton from "./edit-button";
+import { CardType } from "../../lib/types/card";
 
-import { CardType } from '../../lib/types/card'
-import DeleteButton from './delete-button'
-import EditButton from './edit-button'
+interface CardProps {
+  data: CardType[];
+}
 
-export default function Card(props: CardType) {
+export default function Card({ data }: CardProps) {
+  interface ActionCellParams {
+    id: number;
+    title: string;
+    description: string;
+    startDate: string;
+    status: string;
+    resource: string;
+  }
+
+  const columns: GridColDef<ActionCellParams>[] = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "title", headerName: "Title", width: 150 },
+    { field: "description", headerName: "Description", width: 150 },
+    { field: "startDate", headerName: "Start Date", width: 150 },
+    { field: "status", headerName: "Status", width: 150 },
+    { field: "resource", headerName: "Resource", width: 150 },
+    {
+      field: "edit",
+      headerName: "Edit",
+      width: 150,
+      renderCell: (params) => (
+        <div>
+          <EditButton id={params.row.id} />
+        </div>
+      ),
+    },
+    {
+        field: "delete",
+        headerName: "Delete",
+        width: 150,
+        renderCell: (params) => (
+          <div>
+            <DeleteButton id={params.row.id} />
+          </div>
+        ),
+      },
+  ];
+
   return (
-<div>
-    <table className="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
-        <thead className='border'>
-            <tr>
-                <th className="px-6 py-4">ID</th>
-                <th className="px-6 py-4">Title</th>
-                <th className="px-6 py-4">Description</th>
-                <th className="px-6 py-4">Start Date</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Resource</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr className='border'>
-                <td className="bg-white text-gray-700 text-lg px-6 py-4 text-center">{props.id}</td>
-                <td className="bg-white text-gray-700 text-lg px-6 py-4 text-center">{props.title}</td>
-                <td className="px-6 py-4">
-                    <p className="text-gray-700 text-base">{props.description}</p>
-                </td>
-                <td className="bg-white text-gray-700 text-sm px-6 py-4 text-center">{props.startDate}</td>
-                <td className="bg-white text-gray-700 text-sm px-6 py-4 text-center">{props.status}</td>
-                <td className="bg-white text-gray-700 text-sm px-6 py-4 text-center">{props.resource}</td>
-                <td> <EditButton/> </td>
-                <td> <DeleteButton/> </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-  )
+    <div>
+      <div className="w-full">
+        <DataGrid
+          rows={data} // Usa os dados recebidos via props
+          columns={columns}
+          pagination
+          pageSizeOptions={[5]}
+          checkboxSelection
+          disableRowSelectionOnClick
+        />
+      </div>
+    </div>
+  );
 }
